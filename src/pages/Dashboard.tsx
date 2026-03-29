@@ -6,9 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
 import { LayoutDashboard, Users, Clock, CalendarCheck, CheckCircle } from "lucide-react";
-import type { Tables } from "@/integrations/supabase/types";
-
-type Pista = Tables<"pistas">;
+import type { Pista } from "@/types/crm";
 
 const STATUS_FLOW: Record<string, string> = {
   novo: "em atendimento",
@@ -39,9 +37,9 @@ export default function Dashboard() {
       const { data, error } = await supabase
         .from("pistas")
         .select("*")
-        .order("created_at", { ascending: false });
+        .order("created_at" as any, { ascending: false });
       if (error) throw error;
-      return data as Pista[];
+      return data as unknown as Pista[];
     },
   });
 

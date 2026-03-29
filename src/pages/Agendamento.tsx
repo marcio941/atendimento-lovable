@@ -22,9 +22,9 @@ export default function Agendamento() {
       const { data, error } = await supabase
         .from("pistas")
         .select("id, nome, telefone")
-        .order("created_at", { ascending: false });
+        .order("created_at" as any, { ascending: false });
       if (error) throw error;
-      return data;
+      return data as any[];
     },
   });
 
@@ -35,7 +35,7 @@ export default function Agendamento() {
       return;
     }
     setLoading(true);
-    const { error } = await supabase.from("agendamentos").insert({
+    const { error } = await (supabase as any).from("agendamentos").insert({
       lead_id: leadId,
       data_hora: new Date(dataHora).toISOString(),
       observacao: observacao.trim() || null,
@@ -74,7 +74,7 @@ export default function Agendamento() {
                   <SelectValue placeholder="Selecione um lead" />
                 </SelectTrigger>
                 <SelectContent>
-                  {leads?.map((lead) => (
+                  {leads?.map((lead: any) => (
                     <SelectItem key={lead.id} value={lead.id}>
                       {lead.nome} — {lead.telefone}
                     </SelectItem>

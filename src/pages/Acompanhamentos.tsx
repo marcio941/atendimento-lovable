@@ -10,9 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Send } from "lucide-react";
-import type { Tables } from "@/integrations/supabase/types";
-
-type Acompanhamento = Tables<"acompanhamentos">;
+import type { Acompanhamento } from "@/types/crm";
 
 const CANAIS = ["chat", "email", "telefone", "whatsapp"];
 
@@ -29,16 +27,16 @@ export default function Acompanhamentos() {
       const { data, error } = await supabase
         .from("pistas")
         .select("id, nome, telefone")
-        .order("created_at", { ascending: false });
+        .order("created_at" as any, { ascending: false });
       if (error) throw error;
-      return data;
+      return data as any[];
     },
   });
 
   const { data: acompanhamentos, isLoading } = useQuery({
     queryKey: ["acompanhamentos"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("acompanhamentos")
         .select("*, pistas(nome)")
         .order("enviado_em", { ascending: false });
@@ -54,7 +52,7 @@ export default function Acompanhamentos() {
       return;
     }
     setLoading(true);
-    const { error } = await supabase.from("acompanhamentos").insert({
+    const { error } = await (supabase as any).from("acompanhamentos").insert({
       lead_id: leadId,
       mensagem: mensagem.trim(),
       canal,
@@ -93,7 +91,7 @@ export default function Acompanhamentos() {
                     <SelectValue placeholder="Selecione um lead" />
                   </SelectTrigger>
                   <SelectContent>
-                    {leads?.map((lead) => (
+                    {leads?.map((lead: any) => (
                       <SelectItem key={lead.id} value={lead.id}>
                         {lead.nome} — {lead.telefone}
                       </SelectItem>
