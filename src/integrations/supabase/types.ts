@@ -14,7 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      agendamentos: {
+        Row: {
+          criado_em: string
+          data_hora: string
+          id: string
+          nome: string
+          observacao: string | null
+          telefone: string
+        }
+        Insert: {
+          criado_em?: string
+          data_hora: string
+          id?: string
+          nome: string
+          observacao?: string | null
+          telefone: string
+        }
+        Update: {
+          criado_em?: string
+          data_hora?: string
+          id?: string
+          nome?: string
+          observacao?: string | null
+          telefone?: string
+        }
+        Relationships: []
+      }
+      pistas: {
+        Row: {
+          atualizado_em: string
+          criado_em: string
+          id: string
+          mensagem: string | null
+          nome: string
+          status: string
+          telefone: string
+        }
+        Insert: {
+          atualizado_em?: string
+          criado_em?: string
+          id?: string
+          mensagem?: string | null
+          nome: string
+          status?: string
+          telefone: string
+        }
+        Update: {
+          atualizado_em?: string
+          criado_em?: string
+          id?: string
+          mensagem?: string | null
+          nome?: string
+          status?: string
+          telefone?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
