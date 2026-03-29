@@ -1,4 +1,4 @@
-import { MessageSquare, CalendarDays, LayoutDashboard } from "lucide-react";
+import { MessageSquare, CalendarDays, LayoutDashboard, Send } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import {
@@ -16,6 +16,7 @@ import {
 const items = [
   { title: "Atendimento", url: "/", icon: MessageSquare },
   { title: "Agendamento", url: "/agendamento", icon: CalendarDays },
+  { title: "Acompanhamentos", url: "/acompanhamentos", icon: Send },
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
 ];
 
