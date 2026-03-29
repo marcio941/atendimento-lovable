@@ -39,7 +39,7 @@ export default function Dashboard() {
       const { data, error } = await supabase
         .from("pistas")
         .select("*")
-        .order("criado_em", { ascending: false });
+        .order("created_at", { ascending: false });
       if (error) throw error;
       return data as Pista[];
     },
@@ -129,7 +129,7 @@ export default function Dashboard() {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-muted-foreground text-sm">
-                        {new Date(p.criado_em).toLocaleDateString("pt-BR", {
+                        {new Date(p.created_at).toLocaleDateString("pt-BR", {
                           day: "2-digit",
                           month: "2-digit",
                           year: "numeric",

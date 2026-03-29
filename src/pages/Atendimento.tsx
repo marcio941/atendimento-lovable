@@ -25,13 +25,12 @@ export default function Atendimento() {
       nome: nome.trim(),
       telefone: telefone.trim(),
       mensagem: mensagem.trim() || null,
-      status: "novo",
     });
     setLoading(false);
     if (error) {
       toast.error("Erro ao enviar: " + error.message);
     } else {
-      toast.success("Atendimento registrado com sucesso!");
+      toast.success("Lead registrado com sucesso!");
       setNome("");
       setTelefone("");
       setMensagem("");

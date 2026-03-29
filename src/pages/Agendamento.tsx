@@ -1,30 +1,42 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { CalendarDays } from "lucide-react";
 
 export default function Agendamento() {
-  const [nome, setNome] = useState("");
-  const [telefone, setTelefone] = useState("");
+  const [leadId, setLeadId] = useState("");
   const [dataHora, setDataHora] = useState("");
   const [observacao, setObservacao] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const { data: leads } = useQuery({
+    queryKey: ["pistas-select"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("pistas")
+        .select("id, nome, telefone")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nome.trim() || !telefone.trim() || !dataHora) {
-      toast.error("Preencha nome, telefone e data/hora.");
+    if (!leadId || !dataHora) {
+      toast.error("Selecione um lead e a data/hora.");
       return;
     }
     setLoading(true);
     const { error } = await supabase.from("agendamentos").insert({
-      nome: nome.trim(),
-      telefone: telefone.trim(),
+      lead_id: leadId,
       data_hora: new Date(dataHora).toISOString(),
       observacao: observacao.trim() || null,
     });
@@ -33,8 +45,7 @@ export default function Agendamento() {
       toast.error("Erro ao agendar: " + error.message);
     } else {
       toast.success("Agendamento criado com sucesso!");
-      setNome("");
-      setTelefone("");
+      setLeadId("");
       setDataHora("");
       setObservacao("");
     }
@@ -50,19 +61,26 @@ export default function Agendamento() {
             </div>
             <div>
               <CardTitle>Novo Agendamento</CardTitle>
-              <CardDescription>Agende um atendimento com data e hora</CardDescription>
+              <CardDescription>Agende um atendimento vinculado a um lead</CardDescription>
             </div>
           </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="nome">Nome</Label>
-              <Input id="nome" placeholder="Nome do cliente" value={nome} onChange={(e) => setNome(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="telefone">Telefone</Label>
-              <Input id="telefone" placeholder="(00) 00000-0000" value={telefone} onChange={(e) => setTelefone(e.target.value)} />
+              <Label htmlFor="lead">Lead</Label>
+              <Select value={leadId} onValueChange={setLeadId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione um lead" />
+                </SelectTrigger>
+                <SelectContent>
+                  {leads?.map((lead) => (
+                    <SelectItem key={lead.id} value={lead.id}>
+                      {lead.nome} — {lead.telefone}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="dataHora">Data e Hora</Label>
