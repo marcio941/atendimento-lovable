@@ -27,7 +27,7 @@ export default function Acompanhamentos() {
       const { data, error } = await supabase
         .from("pistas")
         .select("id, nome, telefone")
-        .order("created_at" as any, { ascending: false });
+        .order("criado_em", { ascending: false });
       if (error) throw error;
       return data as any[];
     },
