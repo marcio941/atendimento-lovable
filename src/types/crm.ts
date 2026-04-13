@@ -1,4 +1,4 @@
-// Manual types matching the external Supabase schema
+// Types matching the Lovable Cloud database schema
 
 export interface Pista {
   id: string;
@@ -6,16 +6,17 @@ export interface Pista {
   telefone: string;
   mensagem: string | null;
   status: string;
-  created_at: string;
+  criado_em: string;
+  atualizado_em: string;
 }
 
 export interface Agendamento {
   id: string;
-  lead_id: string;
+  nome: string;
+  telefone: string;
   data_hora: string;
   observacao: string | null;
-  status: string;
-  created_at: string;
+  criado_em: string;
 }
 
 export interface Acompanhamento {

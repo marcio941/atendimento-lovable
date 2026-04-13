@@ -22,7 +22,7 @@ export default function Agendamento() {
       const { data, error } = await supabase
         .from("pistas")
         .select("id, nome, telefone")
-        .order("created_at" as any, { ascending: false });
+        .order("criado_em", { ascending: false });
       if (error) throw error;
       return data as any[];
     },
@@ -35,8 +35,15 @@ export default function Agendamento() {
       return;
     }
     setLoading(true);
-    const { error } = await (supabase as any).from("agendamentos").insert({
-      lead_id: leadId,
+    const selectedLead = leads?.find((l: any) => l.id === leadId);
+    if (!selectedLead) {
+      toast.error("Lead não encontrado.");
+      setLoading(false);
+      return;
+    }
+    const { error } = await supabase.from("agendamentos").insert({
+      nome: selectedLead.nome,
+      telefone: selectedLead.telefone,
       data_hora: new Date(dataHora).toISOString(),
       observacao: observacao.trim() || null,
     });
