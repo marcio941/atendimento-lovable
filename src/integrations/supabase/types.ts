@@ -14,6 +14,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      acompanhamentos: {
+        Row: {
+          canal: string
+          enviado_em: string
+          id: string
+          lead_id: string
+          mensagem: string | null
+        }
+        Insert: {
+          canal?: string
+          enviado_em?: string
+          id?: string
+          lead_id: string
+          mensagem?: string | null
+        }
+        Update: {
+          canal?: string
+          enviado_em?: string
+          id?: string
+          lead_id?: string
+          mensagem?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "acompanhamentos_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "pistas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agendamentos: {
         Row: {
           criado_em: string
