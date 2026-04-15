@@ -1,74 +1,77 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, RefreshCw } from "lucide-react";
+import type { Pista } from "@/types/crm";
 
 export default function Atendimento() {
-  const [nome, setNome] = useState("");
-  const [telefone, setTelefone] = useState("");
-  const [mensagem, setMensagem] = useState("");
+  const [leads, setLeads] = useState<Pista[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!nome.trim() || !telefone.trim()) {
-      toast.error("Preencha nome e telefone.");
-      return;
-    }
+  const fetchLeads = useCallback(async () => {
     setLoading(true);
-    const { error } = await supabase.from("pistas").insert({
-      nome: nome.trim(),
-      telefone: telefone.trim(),
-      mensagem: mensagem.trim() || null,
-    });
+    const { data, error } = await supabase
+      .from("pistas")
+      .select("*")
+      .order("criado_em", { ascending: false });
     setLoading(false);
     if (error) {
-      toast.error("Erro ao enviar: " + error.message);
+      toast.error("Erro ao carregar leads: " + error.message);
     } else {
-      toast.success("Lead registrado com sucesso!");
-      setNome("");
-      setTelefone("");
-      setMensagem("");
+      setLeads(data || []);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchLeads();
+  }, [fetchLeads]);
 
   return (
-    <div className="max-w-lg mx-auto">
+    <div className="space-y-4">
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-primary/10">
               <MessageSquare className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <CardTitle>Novo Atendimento</CardTitle>
-              <CardDescription>Registre um novo lead no sistema</CardDescription>
+              <CardTitle>Atendimento — Leads</CardTitle>
+              <CardDescription>Todos os leads registrados no sistema</CardDescription>
             </div>
           </div>
+          <Button variant="outline" size="sm" onClick={fetchLeads} disabled={loading}>
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
+            Atualizar
+          </Button>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="nome">Nome</Label>
-              <Input id="nome" placeholder="Nome do cliente" value={nome} onChange={(e) => setNome(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="telefone">Telefone</Label>
-              <Input id="telefone" placeholder="(00) 00000-0000" value={telefone} onChange={(e) => setTelefone(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="mensagem">Mensagem</Label>
-              <Textarea id="mensagem" placeholder="Descreva o atendimento..." value={mensagem} onChange={(e) => setMensagem(e.target.value)} rows={4} />
-            </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Enviando..." : "Enviar"}
-            </Button>
-          </form>
+          {leads.length === 0 && !loading ? (
+            <p className="text-muted-foreground text-center py-8">Nenhum lead encontrado.</p>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nome</TableHead>
+                  <TableHead>Telefone</TableHead>
+                  <TableHead>Mensagem</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {leads.map((lead) => (
+                  <TableRow key={lead.id}>
+                    <TableCell className="font-medium">{lead.nome}</TableCell>
+                    <TableCell>{lead.telefone}</TableCell>
+                    <TableCell className="max-w-xs truncate">{lead.mensagem || "—"}</TableCell>
+                    <TableCell>{lead.status}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
     </div>
