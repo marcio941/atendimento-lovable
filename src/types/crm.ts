@@ -1,6 +1,6 @@
 // Types matching the Lovable Cloud database schema
 
-export interface Pista {
+export interface Lead {
   id: string;
   nome: string;
   telefone: string;

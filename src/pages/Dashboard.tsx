@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
 import { LayoutDashboard, Users, Clock, CalendarCheck, CheckCircle } from "lucide-react";
-import type { Pista } from "@/types/crm";
+import type { Lead } from "@/types/crm";
 
 const STATUS_FLOW: Record<string, string> = {
   novo: "em atendimento",
@@ -31,15 +31,15 @@ const STATUS_ICONS: Record<string, React.ReactNode> = {
 export default function Dashboard() {
   const queryClient = useQueryClient();
 
-  const { data: pistas, isLoading } = useQuery({
-    queryKey: ["pistas"],
+  const { data: leads, isLoading } = useQuery({
+    queryKey: ["leads"],
     queryFn: async () => {
       const { data, error } = await (supabase as any)
         .from("leads")
         .select("*")
         .order("criado_em", { ascending: false });
       if (error) throw error;
-      return data as unknown as Pista[];
+      return data as unknown as Lead[];
     },
   });
 
@@ -49,17 +49,17 @@ export default function Dashboard() {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["pistas"] });
+      queryClient.invalidateQueries({ queryKey: ["leads"] });
       toast.success("Status atualizado!");
     },
     onError: (err: Error) => toast.error(err.message),
   });
 
   const counts = {
-    novo: pistas?.filter((p) => p.status === "novo").length ?? 0,
-    "em atendimento": pistas?.filter((p) => p.status === "em atendimento").length ?? 0,
-    agendado: pistas?.filter((p) => p.status === "agendado").length ?? 0,
-    fechado: pistas?.filter((p) => p.status === "fechado").length ?? 0,
+    novo: leads?.filter((p) => p.status === "novo").length ?? 0,
+    "em atendimento": leads?.filter((p) => p.status === "em atendimento").length ?? 0,
+    agendado: leads?.filter((p) => p.status === "agendado").length ?? 0,
+    fechado: leads?.filter((p) => p.status === "fechado").length ?? 0,
   };
 
   const statCards = [
@@ -99,7 +99,7 @@ export default function Dashboard() {
         <CardContent>
           {isLoading ? (
             <p className="text-muted-foreground">Carregando...</p>
-          ) : !pistas?.length ? (
+          ) : !leads?.length ? (
             <p className="text-muted-foreground">Nenhum lead registrado.</p>
           ) : (
             <div className="overflow-x-auto">
@@ -114,7 +114,7 @@ export default function Dashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {pistas.map((p) => (
+                  {leads.map((p) => (
                     <TableRow key={p.id}>
                       <TableCell className="font-medium">{p.nome}</TableCell>
                       <TableCell>{p.telefone}</TableCell>

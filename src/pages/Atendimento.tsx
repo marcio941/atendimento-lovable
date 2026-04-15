@@ -5,10 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
 import { MessageSquare, RefreshCw } from "lucide-react";
-import type { Pista } from "@/types/crm";
+import type { Lead } from "@/types/crm";
 
 export default function Atendimento() {
-  const [leads, setLeads] = useState<Pista[]>([]);
+  const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchLeads = useCallback(async () => {
