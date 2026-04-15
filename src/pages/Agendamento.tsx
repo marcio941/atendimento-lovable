@@ -17,7 +17,7 @@ export default function Agendamento() {
   const [loading, setLoading] = useState(false);
 
   const { data: leads } = useQuery({
-    queryKey: ["pistas-select"],
+    queryKey: ["leads-select"],
     queryFn: async () => {
       const { data, error } = await (supabase as any)
         .from("leads")
