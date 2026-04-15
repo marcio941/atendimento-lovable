@@ -25,7 +25,7 @@ export default function Acompanhamentos() {
     queryKey: ["pistas-select"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("pistas")
+        .from("leads")
         .select("id, nome, telefone")
         .order("criado_em", { ascending: false });
       if (error) throw error;
@@ -38,10 +38,10 @@ export default function Acompanhamentos() {
     queryFn: async () => {
       const { data, error } = await (supabase as any)
         .from("acompanhamentos")
-        .select("*, pistas(nome)")
+        .select("*, leads(nome)")
         .order("enviado_em", { ascending: false });
       if (error) throw error;
-      return data as (Acompanhamento & { pistas: { nome: string } | null })[];
+      return data as (Acompanhamento & { leads: { nome: string } | null })[];
     },
   });
 
@@ -149,7 +149,7 @@ export default function Acompanhamentos() {
                 <TableBody>
                   {acompanhamentos.map((a) => (
                     <TableRow key={a.id}>
-                      <TableCell className="font-medium">{a.pistas?.nome ?? "—"}</TableCell>
+                      <TableCell className="font-medium">{a.leads?.nome ?? "—"}</TableCell>
                       <TableCell className="max-w-xs truncate">{a.mensagem}</TableCell>
                       <TableCell>
                         <Badge variant="secondary">{a.canal}</Badge>

@@ -14,7 +14,7 @@ export default function Atendimento() {
   const fetchLeads = useCallback(async () => {
     setLoading(true);
     const { data, error } = await supabase
-      .from("pistas")
+      .from("leads")
       .select("*")
       .order("criado_em", { ascending: false });
     setLoading(false);
