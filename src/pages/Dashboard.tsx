@@ -34,8 +34,8 @@ export default function Dashboard() {
   const { data: pistas, isLoading } = useQuery({
     queryKey: ["pistas"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("pistas")
+      const { data, error } = await (supabase as any)
+        .from("leads")
         .select("*")
         .order("criado_em", { ascending: false });
       if (error) throw error;
@@ -45,7 +45,7 @@ export default function Dashboard() {
 
   const updateStatus = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase.from("pistas").update({ status }).eq("id", id);
+      const { error } = await (supabase as any).from("leads").update({ status }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {

@@ -19,8 +19,8 @@ export default function Agendamento() {
   const { data: leads } = useQuery({
     queryKey: ["pistas-select"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("pistas")
+      const { data, error } = await (supabase as any)
+        .from("leads")
         .select("id, nome, telefone")
         .order("criado_em", { ascending: false });
       if (error) throw error;
