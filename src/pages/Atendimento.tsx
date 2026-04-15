@@ -16,7 +16,7 @@ export default function Atendimento() {
     const { data, error } = await (supabase as any)
       .from("leads")
       .select("*")
-      .order("criado_em", { ascending: false });
+      .order("created_at", { ascending: false });
     setLoading(false);
     if (error) {
       toast.error("Erro ao carregar leads: " + error.message);
