@@ -22,7 +22,7 @@ export default function Agendamento() {
       const { data, error } = await (supabase as any)
         .from("leads")
         .select("id, nome, telefone")
-        .order("criado_em", { ascending: false });
+        .order("created_at", { ascending: false });
       if (error) throw error;
       return data as any[];
     },

@@ -6,8 +6,8 @@ export interface Lead {
   telefone: string;
   mensagem: string | null;
   status: string;
-  criado_em: string;
-  atualizado_em: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Agendamento {
